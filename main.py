@@ -1,6 +1,8 @@
 import os
-from dotenv import load_dotenv
-from twilio.rest import Client
+from dotenv import load_dotenv # type: ignore
+from twilio.rest import Client # type: ignore
+from calendar_manager import get_daily_message
+from datetime import datetime
 
 # Load environment variables from .env
 load_dotenv()
@@ -32,7 +34,7 @@ client = Client(account_sid, auth_token)
 # Send SMS
 message = client.messages.create(
     messaging_service_sid=messaging_service_sid,
-    body="Ahoy 👋",
+    body=get_daily_message(datetime.now()),
     to=recipient_number #type: ignore
 )
 
