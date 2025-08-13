@@ -1,0 +1,33 @@
+name: Daily Schedule SMS
+
+on:
+  schedule:
+    # Runs every day at 21:45 UTC = 7:45 AM Australia/Brisbane (UTC+10)
+    - cron: "45 21 * * *"
+  workflow_dispatch: {}   # lets you run it manually for testing
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run SMS script
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_MESSAGING_SERVICE_SID: ${{ secrets.TWILIO_MESSAGING_SERVICE_SID }}
+          RECIPIENT_NUMBER: ${{ secrets.RECIPIENT_NUMBER }}
+        run: |
+          python main.py
